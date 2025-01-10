@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>SMM:WE Calculator</title>
+    <meta content="SMM:WE Calculator | HeXp" property="og:title" />
+    <meta content="Herramienta para redimensionar ripeos de NSMBU. Originalmente hecha para SMM:WE." property="og:description" />
+    <meta content="https://hexp.es/ripcalc/" property="og:url" />
+    <meta content="https://hexp.es/ripcalc/img/block.png" property="og:image" />
+    <meta content="#ffc219" data-react-helmet="true" name="theme-color" />
+    <link rel="stylesheet" href="https://unpkg.com/mdui@2/mdui.css">
+    <script src="https://unpkg.com/mdui@2/mdui.global.js"></script>
+    <html class="mdui-theme-dark">
+    <link rel="icon" href="img/block.png" type="image/png">
+    <style>
+        @font-face {
+            font-family: 'Google';
+            src: url('fnt/google.ttf') format('truetype');
+        }
+
+        @font-face {
+            font-family: 'Google Light';
+            src: url('fnt/google-light.ttf') format('truetype');
+        }
+
+        :root {
+            --mdui-color-primary-dark: #6d82c7 /* Verde clarito oscuro */
+        }
+
+        html, body {
+            height: 100%;
+        }
+
+        body {
+            font-family: 'Google';
+            background-image: url('img/bg.png');
+            color: #ffffff;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            vertical-align: center;
+            max-width: 650px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .mt-4 {
+            font-family: 'Google Light';
+            margin-top: 1rem;
+            text-align: center;
+        }
+
+        .dark-mode {
+            background-color: #1a1a1a;
+            color: #ffffff;
+        }
+
+        .banner-container {
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        .banner-img {
+            text-align: center;
+            max-width: 350px;
+            height: auto;
+            user-drag: none;
+            -webkit-user-drag: none;
+            user-select: none;
+            -moz-user-select: none;
+            -webkit-user-select: none;
+            -ms-user-select: none;
+        }
+
+        .footer {
+            margin-top: 30px;
+            text-align: center;
+            color: #c9c9c7;
+        }
+
+        .botones {
+            text-align: center;
+            align-content: center;
+            padding: 20px;
+            border-radius: 20px;
+            background-color: #363636;
+            max-width: 500px;
+            margin: auto;
+        }
+
+        .content-container {
+            background-color: #212121;
+            border-radius: 20px;
+            padding: 20px;
+        }
+
+        .form-group {
+            margin: auto;
+            max-width: 600px;
+            margin-top: 5px;
+            margin-bottom: 1rem;
+        }
+
+        .form-group2 {
+            margin: auto;
+            max-width: 600px;
+            margin-bottom: 25px;
+        }
+
+        .mdui-text-color-theme {
+            color: var(--mdui-color-primary) !important;
+        }
+
+        .mdui-btn {
+            background-color: var(--mdui-color-primary-dark) !important;
+            color: #ffffff !important;
+        }
+    </style>
+</head>
+
+<body class="mdui-theme-primary mdui-theme-accent">
+    <div class="container mt-5">
+        <div class="content-container">
+            <div class="banner-container">
+                <a href="index.html">
+                    <img class="banner-img" src="img/banner.png" alt="Banner">
+                </a>
+            </div>
+
+            <form id="calculate-form">
+                <div class="form-group">
+                    <mdui-text-field class="mdui-color-theme" type="text" name="anchoBloque" id="anchoBloque" label="Ancho del bloque"></mdui-text-field>
+                </div>
+                <div class="form-group2">
+                    <mdui-text-field type="text" name="anchoCaptura" id="anchoCaptura" label="Ancho de la captura"></mdui-text-field>
+                </div>
+                <div class="botones">
+                    <mdui-button class="mdui-btn mdui-btn-raised mdui-ripple mdui-color-theme" data-operation="128x">128x</mdui-button>
+                    <mdui-button class="mdui-btn mdui-btn-raised mdui-ripple mdui-color-theme" data-operation="64x">64x</mdui-button>
+                    <mdui-button class="mdui-btn mdui-btn-raised mdui-ripple mdui-color-theme" data-operation="48x">48x</mdui-button>
+                    <mdui-button class="mdui-btn mdui-btn-raised mdui-ripple mdui-color-theme" data-operation="32x">32x</mdui-button>
+                    <mdui-button class="mdui-btn mdui-btn-raised mdui-ripple mdui-color-theme" data-operation="24x">24x</mdui-button>
+                    <mdui-button class="mdui-btn mdui-btn-raised mdui-ripple mdui-color-theme" data-operation="16x">16x</mdui-button>
+                </div>
+            </form>
+            <div class="mt-4" id="resultado-container">
+                <h1 id="resultado"></h1>
+            </div>
+            <div class="footer">
+                <p>Calculadora creada por HeXp. Versión 2.2.0 (final)</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const calculateForm = document.getElementById("calculate-form");
+            const resultadoElement = document.getElementById("resultado");
+
+            calculateForm.addEventListener("click", function (event) {
+                if (event.target.tagName === "MDUI-BUTTON") {
+                    const anchoBloque = parseFloat(document.getElementById("anchoBloque").value);
+                    const anchoCaptura = parseFloat(document.getElementById("anchoCaptura").value);
+                    const operation = event.target.getAttribute("data-operation");
+
+                    if (isNaN(anchoBloque) || isNaN(anchoCaptura)) {
+                        resultadoElement.textContent = "";
+                        return;
+                    }
+
+                    let resultado;
+
+                    if (operation === "32x") {
+                        resultado = Math.round((anchoCaptura * 32) / anchoBloque);
+                    } else if (operation === "16x") {
+                        resultado = Math.round((anchoCaptura * 16) / anchoBloque);
+                    } else if (operation === "48x") {
+                        resultado = Math.round((anchoCaptura * 48) / anchoBloque);
+                    } else if (operation === "24x") {
+                        resultado = Math.round((anchoCaptura * 24) / anchoBloque);
+                    } else if (operation === "64x") {
+                        resultado = Math.round((anchoCaptura * 64) / anchoBloque);
+                    } else if (operation === "128x") {
+                        resultado = Math.round((anchoCaptura * 128) / anchoBloque);
+                    }
+
+                    resultadoElement.textContent = `Resultado: ${resultado}`;
+                }
+            });
+        });
+    </script>
+</body>
+</html>
